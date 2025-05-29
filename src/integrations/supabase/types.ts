@@ -9,33 +9,99 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          story_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          story_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          story_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       chapters: {
         Row: {
           chapter_number: number
           content: string
           created_at: string | null
           id: string
+          is_vip: boolean | null
           published_at: string | null
           story_id: string | null
           title: string
+          word_count: number | null
         }
         Insert: {
           chapter_number: number
           content: string
           created_at?: string | null
           id?: string
+          is_vip?: boolean | null
           published_at?: string | null
           story_id?: string | null
           title: string
+          word_count?: number | null
         }
         Update: {
           chapter_number?: number
           content?: string
           created_at?: string | null
           id?: string
+          is_vip?: boolean | null
           published_at?: string | null
           story_id?: string | null
           title?: string
+          word_count?: number | null
         }
         Relationships: [
           {
@@ -47,73 +113,150 @@ export type Database = {
           },
         ]
       }
-      credit_transactions: {
+      comments: {
         Row: {
-          amount: number
+          chapter_id: string | null
+          content: string
           created_at: string | null
-          description: string
           id: string
-          type: string
+          story_id: string | null
           user_id: string | null
         }
         Insert: {
-          amount: number
+          chapter_id?: string | null
+          content: string
           created_at?: string | null
-          description: string
           id?: string
-          type: string
+          story_id?: string | null
           user_id?: string | null
         }
         Update: {
-          amount?: number
+          chapter_id?: string | null
+          content?: string
           created_at?: string | null
-          description?: string
           id?: string
-          type?: string
+          story_id?: string | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "comments_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reading_history: {
+        Row: {
+          chapter_id: string | null
+          id: string
+          last_read_at: string | null
+          story_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          chapter_id?: string | null
+          id?: string
+          last_read_at?: string | null
+          story_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          chapter_id?: string | null
+          id?: string
+          last_read_at?: string | null
+          story_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_history_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reading_history_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reading_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stories: {
         Row: {
           author: string
+          category: string | null
           cover_image: string | null
           created_at: string | null
           description: string | null
           full_description: string | null
           id: string
           rating: number | null
+          slug: string
           status: string | null
           tags: string[] | null
           title: string
+          total_chapters: number | null
           updated_at: string | null
           views: number | null
         }
         Insert: {
           author: string
+          category?: string | null
           cover_image?: string | null
           created_at?: string | null
           description?: string | null
           full_description?: string | null
           id?: string
           rating?: number | null
+          slug: string
           status?: string | null
           tags?: string[] | null
           title: string
+          total_chapters?: number | null
           updated_at?: string | null
           views?: number | null
         }
         Update: {
           author?: string
+          category?: string | null
           cover_image?: string | null
           created_at?: string | null
           description?: string | null
           full_description?: string | null
           id?: string
           rating?: number | null
+          slug?: string
           status?: string | null
           tags?: string[] | null
           title?: string
+          total_chapters?: number | null
           updated_at?: string | null
           views?: number | null
         }
@@ -121,25 +264,43 @@ export type Database = {
       }
       users: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           credits: number | null
+          display_name: string | null
           email: string | null
           id: string
           is_admin: boolean | null
+          last_login: string | null
+          username: string | null
+          vip_expire_date: string | null
+          vip_level: number | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           credits?: number | null
+          display_name?: string | null
           email?: string | null
           id: string
           is_admin?: boolean | null
+          last_login?: string | null
+          username?: string | null
+          vip_expire_date?: string | null
+          vip_level?: number | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           credits?: number | null
+          display_name?: string | null
           email?: string | null
           id?: string
           is_admin?: boolean | null
+          last_login?: string | null
+          username?: string | null
+          vip_expire_date?: string | null
+          vip_level?: number | null
         }
         Relationships: []
       }
