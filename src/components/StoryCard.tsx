@@ -15,9 +15,44 @@ interface Story {
 
 interface StoryCardProps {
   story: Story
+  layout?: 'grid' | 'list'
 }
 
-function StoryCard({ story }: StoryCardProps) {
+function StoryCard({ story, layout = 'grid' }: StoryCardProps) {
+  if (layout === 'list') {
+    return (
+      <Link to={`/truyen/${story.slug}`} className="block group">
+        <div className="flex items-start space-x-3 p-3 bg-zinc-700 rounded-lg hover:bg-zinc-600 transition-colors">
+          <img 
+            src={story.cover_image || '/placeholder-book.png'} 
+            alt={story.title}
+            className="w-16 h-22 object-cover rounded"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/placeholder-book.png';
+            }}
+          />
+          <div className="flex-1">
+            <h3 className="text-white font-medium text-sm mb-1 line-clamp-2 group-hover:text-rose-400 transition-colors">
+              {story.title}
+            </h3>
+            <p className="text-gray-400 text-xs mb-2 line-clamp-2">{story.description}</p>
+            <div className="flex items-center space-x-3 text-xs text-gray-400">
+              <span>4 giờ trước</span>
+              <span>{story.total_chapters || 0} chương</span>
+              {story.category && (
+                <span className="text-rose-400">{story.category}</span>
+              )}
+            </div>
+            {story.author && (
+              <p className="text-gray-400 text-xs mt-1">{story.author}</p>
+            )}
+          </div>
+        </div>
+      </Link>
+    )
+  }
+
   return (
     <Link to={`/truyen/${story.slug}`} className="block group">
       <div className="bg-zinc-600 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105">
